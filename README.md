@@ -58,9 +58,14 @@ If you prefer to run the script manually:
    python novapulse.pyw
    ```
 
-### 3. Usage
-*   **Tray Icon:** Right-click the headset icon in the system tray to open settings, logs, or toggle autostart.
-*   **Autostart:** Enable "Start with Windows" in the tray menu or settings to keep NovaPulse running in the background.
+---
+
+## 🔒 Security & Technical Details
+
+NovaPulse communicates locally with the SteelSeries GG Engine via `127.0.0.1` (Localhost). 
+
+*   **Certificate Warnings:** The source code uses `urllib3.disable_warnings()`. This is necessary because the GG Engine uses a self-signed certificate for its local API.
+*   **No Security Risk:** Since all communication happens exclusively within your own machine, there is no risk of Man-in-the-Middle attacks from the internet. No data is sent to external servers.
 
 ---
 
@@ -75,15 +80,6 @@ NovaPulse creates a `config.json` in your `%LOCALAPPDATA%\NovaPulse` folder. Whi
 ## 🤝 Contributing
 
 Contributions are welcome! Whether it's a bug fix, a new feature, or a translation update, feel free to open a Pull Request or Issue.
-
----
-
-## 🔒 Sicherheit & Technische Details
-
-NovaPulse kommuniziert lokal mit der SteelSeries GG Engine über die Adresse `127.0.0.1` (Localhost). 
-
-*   **Zertifikatswarnungen:** Im Quellcode wird `urllib3.disable_warnings()` verwendet. Dies ist notwendig, da die GG Engine für ihre lokale API ein selbstsigniertes Zertifikat nutzt.
-*   **Kein Sicherheitsrisiko:** Da die gesamte Kommunikation ausschließlich innerhalb deines eigenen Rechners stattfindet, besteht kein Risiko für Man-in-the-Middle-Angriffe aus dem Internet. Es werden keine Daten nach außen gesendet.
 
 ---
 
