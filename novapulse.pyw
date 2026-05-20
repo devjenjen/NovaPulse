@@ -84,6 +84,7 @@ _STRINGS = {
         "autostart_on":         "Autostart enabled. App will start with Windows.",
         "autostart_off":        "Autostart disabled.",
         "tray_status_offline":  "Device offline – standby",
+        "tray_menu_settings":   "Settings",
         "tray_menu_autostart":  "{check} Start with Windows",
         "tray_menu_config":     "Open config.json",
         "tray_menu_log":        "Open log file",
@@ -129,6 +130,7 @@ _STRINGS = {
         "autostart_on":         "Autostart aktiviert. App startet mit Windows.",
         "autostart_off":        "Autostart deaktiviert.",
         "tray_status_offline":  "Gerät offline – Standby",
+        "tray_menu_settings":   "Einstellungen",
         "tray_menu_autostart":  "{check} Mit Windows starten",
         "tray_menu_config":     "config.json öffnen",
         "tray_menu_log":        "Log-Datei öffnen",
@@ -546,6 +548,10 @@ class TrayApp:
     def _open_log(self, icon, item) -> None:
         os.startfile(str(LOG_FILE))
 
+    def _on_settings(self, icon=None, item=None) -> None:
+        config = load_config()
+        open_settings_gui(config)
+
     def _quit(self, icon, item) -> None:
         logger.info("Quit via tray menu.")
         icon.stop()
@@ -560,6 +566,7 @@ class TrayApp:
             pystray.MenuItem(f"{APP_NAME}  v{VERSION}", None, enabled=False),
             pystray.MenuItem(lambda _: self._status, None, enabled=False),
             pystray.Menu.SEPARATOR,
+            pystray.MenuItem(lambda _: t("tray_menu_settings"), self._on_settings, default=True),
             pystray.MenuItem(
                 lambda _: t("tray_menu_autostart", check="✓" if is_autostart_enabled() else "✗"),
                 self._toggle_autostart,
@@ -569,7 +576,13 @@ class TrayApp:
             pystray.Menu.SEPARATOR,
             pystray.MenuItem(lambda _: t("tray_menu_quit"), self._quit),
         )
-        self._icon = pystray.Icon(APP_NAME, icon=_create_tray_icon(_COLOR_GREY), title=APP_NAME, menu=menu)
+        self._icon = pystray.Icon(
+            APP_NAME, 
+            icon=_create_tray_icon(_COLOR_GREY), 
+            title=APP_NAME, 
+            menu=menu
+        )
+        # Handle double-click/activation on the icon itself
         self._icon.run()
 
 

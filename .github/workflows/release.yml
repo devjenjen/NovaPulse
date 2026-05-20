@@ -29,10 +29,17 @@ jobs:
         run: |
           pyinstaller --noconsole --onefile --icon=assets/icon.ico --name "NovaPulse" novapulse.pyw
 
+      - name: Build Installer (Inno Setup)
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+        shell: powershell
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/NovaPulse.exe
+          files: |
+            dist/NovaPulse.exe
+            dist/installer/*.exe
           prerelease: true
           generate_release_notes: true
         env:
