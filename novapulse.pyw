@@ -52,7 +52,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 APP_NAME    = "NovaPulse"
-VERSION     = "0.1.0-pre"
+VERSION     = "0.1.0"
 APP_DIR     = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "NovaPulse"
 CONFIG_FILE = APP_DIR / "config.json"
 LOG_FILE    = APP_DIR / "novapulse.log"
