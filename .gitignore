@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Runtime data (created by NovaPulse at launch)
+# %LOCALAPPDATA%\NovaPulse\ is outside the repo, nothing to ignore here
+
+# Dev / test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Superpowers & Development
+.claude/
+.worktrees/
+.superpowers/
+docs/superpowers/
+CLAUDE.md
+STATUS.md
+
+# Runtime data & Logs
+*.db
+*.log
+crash.log
+history.db
+
+# Windows
+Thumbs.db
+desktop.ini
