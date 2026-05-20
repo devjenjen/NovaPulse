@@ -33,10 +33,10 @@ The new settings interface features:
 ## 🚀 Quick Start
 
 ### 📦 Download (Recommended)
-The easiest way to use NovaPulse is to download the latest pre-compiled executable:
+The easiest way to use NovaPulse is to download the latest release:
 1. Go to the **[Latest Release](https://github.com/devjenjen/NovaPulse/releases/latest)**.
-2. Download `NovaPulse.exe`.
-3. Run the file. No Python installation required!
+2. **Setup Installer:** Download `NovaPulse-Setup-0.1.0.exe` for a full Windows installation (Start menu shortcuts, etc.).
+3. **Portable:** Download `NovaPulse.exe` if you want to run it without installation.
 
 ---
 
