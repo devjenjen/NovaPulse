@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/Version-v0.1.0-blueviolet)](https://github.com/devjenjen/NovaPulse/releases)
+[![Release](https://img.shields.io/badge/Version-v0.1.1--pre-blueviolet)](https://github.com/devjenjen/NovaPulse/releases)
 
 NovaPulse is a lightweight, high-performance background monitor for **SteelSeries Nova Pro Wireless** headsets. It bridges the gap between the SteelSeries GG Engine and your Windows desktop, providing smart notifications and a modern settings interface.
 
@@ -35,7 +35,7 @@ The new settings interface features:
 ### 📦 Download (Recommended)
 The easiest way to use NovaPulse is to download the latest release:
 1. Go to the **[Latest Release](https://github.com/devjenjen/NovaPulse/releases/latest)**.
-2. **Setup Installer:** Download `NovaPulse-Setup-0.1.0.exe` for a full Windows installation (Start menu shortcuts, etc.).
+2. **Setup Installer:** Download `NovaPulse-Setup-0.1.1-pre.exe` for a full Windows installation (Start menu shortcuts, etc.).
 3. **Portable:** Download `NovaPulse.exe` if you want to run it without installation.
 
 ---
