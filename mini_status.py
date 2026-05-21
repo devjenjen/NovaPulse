@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import tkinter as tk
 
 class MiniStatusWindow(ctk.CTkToplevel):
-    def __init__(self, master=None, db_file=None, headset_pct: int = 0, charger_pct: int = 0, charging_status: str = "", **kwargs):
+    def __init__(self, master=None, db_file=None, headset_pct: int = 0, charger_pct: int = 0, charging_status: str = "", refresh_callback=None, **kwargs):
         super().__init__(master, **kwargs)
         
         self.overrideredirect(True)
@@ -14,6 +14,7 @@ class MiniStatusWindow(ctk.CTkToplevel):
         self.db_file = db_file
         self.time_range = "24h"
         self.history_data = []
+        self.refresh_callback = refresh_callback
 
         # Position at bottom right, near tray
         self.update_idletasks()
@@ -60,6 +61,22 @@ class MiniStatusWindow(ctk.CTkToplevel):
         
         if self.db_file:
             self.load_graph_data()
+            
+        # Start auto-refresh
+        self._schedule_refresh()
+
+    def _schedule_refresh(self):
+        """Schedule the next UI refresh."""
+        self.after(60000, self.refresh)
+
+    def refresh(self):
+        """Update battery levels and graph data from callback or global state."""
+        if self.refresh_callback:
+            h, c, s = self.refresh_callback()
+            self.update_battery(h, c, s)
+        
+        self.load_graph_data()
+        self._schedule_refresh()
 
     def _on_range_change(self, value):
         self.time_range = value

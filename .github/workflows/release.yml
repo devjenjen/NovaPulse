@@ -23,7 +23,23 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller requests windows-toasts pystray pillow customtkinter
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Inject Version from Tag
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $cleanTag = $tag.TrimStart('v')
+          
+          # 1. Update Python code
+          (Get-Content novapulse.pyw) -replace 'VERSION\s*=\s*".*"', "VERSION     = `"$tag`"" | Set-Content novapulse.pyw
+          
+          # 2. Update README.md badge (supports vX.X.X or X.X.X)
+          (Get-Content README.md) -replace 'Version-v?\d+\.\d+\.\d+[^-\s]*', "Version-$tag" | Set-Content README.md
+          
+          # 3. Update setup.iss (Inno Setup)
+          (Get-Content setup.iss) -replace '#define AppVersion\s*".*"', "#define AppVersion   `"$cleanTag`"" | Set-Content setup.iss
+        shell: powershell
 
       - name: Build Executable
         run: |

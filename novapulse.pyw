@@ -59,7 +59,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 APP_NAME    = "NovaPulse"
-VERSION     = "0.1.0"
+VERSION     = "0.0.0-dev"
 APP_DIR     = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "NovaPulse"
 CONFIG_FILE = APP_DIR / "config.json"
 LOG_FILE    = APP_DIR / "novapulse.log"
@@ -673,7 +673,6 @@ class TrayApp:
     def _quit(self, icon, item) -> None:
         logger.info("Quit via tray menu.")
         icon.stop()
-        os._exit(0)
 
     def run(self) -> None:
         if not TRAY_AVAILABLE:
@@ -788,7 +787,12 @@ def toggle_mini_status():
             _mini_status_running = False
             root.destroy()
             
-        win = MiniStatusWindow(root, db_file=DB_FILE, headset_pct=_current_headset, charger_pct=_current_charger, charging_status=_current_status)
+        def get_current_data():
+            return _current_headset, _current_charger, _current_status
+
+        win = MiniStatusWindow(root, db_file=DB_FILE, headset_pct=_current_headset, 
+                               charger_pct=_current_charger, charging_status=_current_status,
+                               refresh_callback=get_current_data)
         win.protocol("WM_DELETE_WINDOW", on_close)
         win.show()
         root.mainloop()
