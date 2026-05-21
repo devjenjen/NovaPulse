@@ -258,6 +258,7 @@ crash_logger.addHandler(_make_rotating_handler(CRASH_LOG))
 
 _LOCK_PORT   = 47893
 _lock_socket = None
+_reload_event = threading.Event()
 
 def _acquire_instance_lock() -> bool:
     global _lock_socket
@@ -638,6 +639,12 @@ class BatteryMonitor:
         self.charger_full_notified = False
         self.last_charger_pct: int | None = None
 
+    def reload_config(self, config: dict) -> None:
+        self.config             = config
+        self.low_threshold      = config["low_threshold"]
+        self.critical_threshold = config["critical_threshold"]
+        self.full_level         = config["full_level"]
+
     def update(self, data: dict) -> None:
         headset = data["headset_pct"]
         charger = data["charger_pct"]
@@ -695,6 +702,11 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
     offline_count = 0
 
     while True:
+        if _reload_event.is_set():
+            _reload_event.clear()
+            config.update(load_config())
+            monitor.reload_config(config)
+
         if tx_id is None:
             tx_id = find_transmitter_id()
 
@@ -708,7 +720,7 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
             tx_id = None
             tray.set_standby()
             sleep_time = standby_retry_fast if offline_count <= standby_fast_count else standby_retry_slow
-            time.sleep(sleep_time)
+            _reload_event.wait(sleep_time)
         else:
             if gg_was_down:
                 logger.info(f"GG reconnected after {offline_count} retries – resuming polling")
@@ -719,7 +731,7 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
             if data["headset_pct"] == 0 and data["charging"] == "UNKNOWN_OR_HEADSET_NOT_CONNECTED":
                 logger.debug("Headset not connected or powered off – skipping update")
                 tray.set_status(data["headset_pct"], data["charger_pct"], data["charging"])
-                time.sleep(config["poll_interval"])
+                _reload_event.wait(config["poll_interval"])
                 continue
 
             logger.info(
@@ -730,7 +742,7 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
             tray.set_status(data["headset_pct"], data["charger_pct"], data["charging"])
             monitor.update(data)
             log_battery(data["headset_pct"], data["charger_pct"])
-            time.sleep(config["poll_interval"])
+            _reload_event.wait(config["poll_interval"])
 
 
 # ── Test helpers ───────────────────────────────────────────────────────────────
@@ -1048,6 +1060,7 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
             try:
                 CONFIG_FILE.write_text(json.dumps(cfg, indent=4), encoding="utf-8")
                 logger.info(f"Config saved via GUI: {CONFIG_FILE}")
+                _reload_event.set()
             except Exception as e:
                 logger.error(f"Failed to save config: {e}")
             
