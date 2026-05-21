@@ -11,13 +11,12 @@
 - **SQLite history** – battery events logged to history.db.
 - **Auto-update check** – queries GitHub Releases API.
 - **Autostart toggle** – Windows registry integration.
+- **Hot-reload config** – reload thresholds without full restart.
+- **Mini status window** – battery graph from history.db with global hotkey.
+- **Installer / setup wizard** – first-run experience.
+- **Headset Power State Detection** – distinguishes "headset off" from "battery dead" (Offline state).
 
 ## Open TODOs
-
-- [ ] **Hot-reload config** – reload thresholds without full restart.
-- [ ] **Mini status window** – battery graph from history.db.
-- [ ] **Installer / setup wizard** – first-run experience.
-- [ ] **Headset Power State Detection** – distinguish "headset off" from "battery dead".
 
 ## Known Bugs / Issues
 
