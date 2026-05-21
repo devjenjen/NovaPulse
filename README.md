@@ -71,7 +71,7 @@ NovaPulse communicates locally with the SteelSeries GG Engine via `127.0.0.1` (L
 
 ### 🤝 Contributing & Feedback
 
-Do you like NovaPulse? We welcome feedback, bug reports, or pull requests (code improvements)!
+Do you like NovaPulse? I welcome feedback, bug reports, or pull requests (code improvements)!
 
 ### 📜 License
 
@@ -144,7 +144,7 @@ NovaPulse kommuniziert ausschließlich lokal mit der SteelSeries GG Engine über
 
 ### 🤝 Mitmachen & Feedback
 
-Gefällt dir NovaPulse? Wir freuen uns über Feedback, Bug-Reports oder Pull-Requests (Verbesserungen am Code)!
+Gefällt dir NovaPulse? Ich freue mich über Feedback, Bug-Reports oder Pull-Requests (Verbesserungen am Code)!
 
 ### 📜 Lizenz
 
