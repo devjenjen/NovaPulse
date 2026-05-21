@@ -3,7 +3,7 @@
 ; Requires: Inno Setup 6.x  https://jrsoftware.org/isinfo.php
 
 #define AppName      "NovaPulse"
-#define AppVersion   "0.1.1-pre"
+#define AppVersion   "0.1.0"
 #define AppPublisher "devjenjen"
 #define AppURL       "https://github.com/devjenjen/NovaPulse"
 #define AppExeName   "NovaPulse.exe"
