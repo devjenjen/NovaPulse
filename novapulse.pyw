@@ -632,11 +632,19 @@ class TrayApp:
         self._icon    = None
 
     def set_status(self, headset: int, charger: int, charging: str) -> None:
+        is_offline = (headset == 0 and charging == "UNKNOWN_OR_HEADSET_NOT_CONNECTED")
         charge_mark  = " ⚡" if charging == "CHARGING" else ""
-        self._status = f"Headset:  {headset}%{charge_mark}\nCharger:  {charger}%"
-        if self._icon:
-            self._icon.icon  = _create_tray_icon(_battery_color(headset))
-            self._icon.title = t("tray_tooltip", h=headset, c=charger)
+        
+        if is_offline:
+            self._status = f"Headset:  Offline\nCharger:  {charger}%"
+            if self._icon:
+                self._icon.icon  = _create_tray_icon(_battery_color(0, offline=True))
+                self._icon.title = f"Headset: Offline  |  Charger: {charger}%"
+        else:
+            self._status = f"Headset:  {headset}%{charge_mark}\nCharger:  {charger}%"
+            if self._icon:
+                self._icon.icon  = _create_tray_icon(_battery_color(headset))
+                self._icon.title = t("tray_tooltip", h=headset, c=charger)
 
     def set_standby(self) -> None:
         self._status = t("tray_status_offline")
