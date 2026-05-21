@@ -24,7 +24,7 @@ class MiniStatusWindow(ctk.CTkToplevel):
         self.geometry(f"+{x}+{y}")
         
         # Auto-hide on focus out
-        self.bind("<FocusOut>", lambda e: self.withdraw())
+        self.bind("<FocusOut>", lambda e: self.master.destroy())
         
         # UI
         self.configure(fg_color="#0f172a")
@@ -33,7 +33,7 @@ class MiniStatusWindow(ctk.CTkToplevel):
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=10, pady=(10, 5))
         ctk.CTkLabel(header, text="NovaPulse", font=("Segoe UI", 14, "bold"), text_color="#ffffff").pack(side="left")
-        ctk.CTkButton(header, text="×", width=24, height=24, fg_color="transparent", hover_color="#ef4444", command=self.withdraw).pack(side="right")
+        ctk.CTkButton(header, text="×", width=24, height=24, fg_color="transparent", hover_color="#ef4444", command=self.master.destroy).pack(side="right")
         
         # Battery Displays
         self.batt_frame = ctk.CTkFrame(self, fg_color="#1e293b", corner_radius=10)

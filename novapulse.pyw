@@ -46,6 +46,12 @@ try:
 except ImportError:
     CTK_AVAILABLE = False
 
+try:
+    import keyboard
+    KEYBOARD_AVAILABLE = True
+except ImportError:
+    KEYBOARD_AVAILABLE = False
+
 # SteelSeries GG uses a self-signed cert on localhost – no security risk.
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -199,6 +205,7 @@ DEFAULT_CONFIG = {
     "standby_retry_slow": 300,    # slow retry interval
     "auto_check_updates":  True,  # check GitHub Releases API on startup
     "hardware_alert":      True,  # trigger GameSense OLED alert
+    "hotkey":      "ctrl+shift+b",# global hotkey for mini status
 }
 
 
@@ -685,6 +692,38 @@ class BatteryMonitor:
         self.last_charger_pct = charger
 
 
+# ── Global State for Hotkey ────────────────────────────────────────────────────
+_current_headset = 0
+_current_charger = 0
+_current_status = ""
+_mini_status_running = False
+
+def toggle_mini_status():
+    global _mini_status_running
+    if _mini_status_running or not CTK_AVAILABLE:
+        return
+    _mini_status_running = True
+    
+    try:
+        import customtkinter as ctk
+        from mini_status import MiniStatusWindow
+        
+        root = ctk.CTk()
+        root.withdraw()
+        
+        def on_close():
+            global _mini_status_running
+            _mini_status_running = False
+            root.destroy()
+            
+        win = MiniStatusWindow(root, db_file=DB_FILE, headset_pct=_current_headset, charger_pct=_current_charger, charging_status=_current_status)
+        win.protocol("WM_DELETE_WINDOW", on_close)
+        win.show()
+        root.mainloop()
+    except Exception as e:
+        logger.error(f"Failed to show mini status: {e}")
+        _mini_status_running = False
+
 # ── Main loop ──────────────────────────────────────────────────────────────────
 
 def monitor_loop(config: dict, tray: TrayApp) -> None:
@@ -733,6 +772,11 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
                 tray.set_status(data["headset_pct"], data["charger_pct"], data["charging"])
                 _reload_event.wait(config["poll_interval"])
                 continue
+
+            global _current_headset, _current_charger, _current_status
+            _current_headset = data["headset_pct"]
+            _current_charger = data["charger_pct"]
+            _current_status = data["charging"]
 
             logger.info(
                 f"Headset: {data['headset_pct']:3d}%  |  "
@@ -1015,6 +1059,10 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
         s_int_var = tk.IntVar(value=cfg.get("standby_retry_slow", 300))
         ctk.CTkEntry(r_s_int, textvariable=s_int_var, width=60, fg_color=ENTRY, border_color=BORDER).pack(side="right")
 
+        r_hk = _create_row(c_engine, "Global Hotkey")
+        hk_var = tk.StringVar(value=cfg.get("hotkey", "ctrl+shift+b"))
+        ctk.CTkEntry(r_hk, textvariable=hk_var, width=100, fg_color=ENTRY, border_color=BORDER).pack(side="right")
+
         # Card 2: Hardware
         c_hw = _create_card(f_adv, "Hardware Features")
         r_hw = _create_row(c_hw, t("gui_hardware_alert"))
@@ -1050,6 +1098,7 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
             cfg["standby_retry_fast"] = max(1, f_int_var.get())
             cfg["standby_fast_count"] = max(0, f_cnt_var.get())
             cfg["standby_retry_slow"] = max(1, s_int_var.get())
+            cfg["hotkey"]             = hk_var.get().strip()
             cfg["hardware_alert"]     = hw_var.get()
 
             # 2. Handle Autostart
@@ -1142,6 +1191,13 @@ def main() -> None:
     logger.info(f"  pystray            : {'available' if TRAY_AVAILABLE else 'NOT installed'}")
     logger.info(f"  Autostart          : {'enabled' if is_autostart_enabled() else 'disabled'}")
     logger.info("=" * 52)
+
+    if KEYBOARD_AVAILABLE and config.get("hotkey"):
+        try:
+            keyboard.add_hotkey(config["hotkey"], toggle_mini_status)
+            logger.info(f"Registered global hotkey: {config['hotkey']}")
+        except Exception as e:
+            logger.error(f"Failed to register hotkey: {e}")
 
     tray = TrayApp()
     t_thread = threading.Thread(target=monitor_loop, args=(config, tray), daemon=True)
