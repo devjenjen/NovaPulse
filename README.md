@@ -14,14 +14,16 @@ NovaPulse is a lightweight, high-performance background monitor for **SteelSerie
 *   **🔋 Charger Monitoring:** Know exactly when your spare battery in the base station is fully charged and ready to swap.
 *   **📟 GameSense OLED Support:** Displays a flashing **"!!! SWAP AKKU !!!"** alert directly on your base station's OLED screen when critical.
 *   **🎨 Modern Settings GUI:** A beautiful, High-DPI responsive interface built with `customtkinter`, matching the SteelSeries aesthetic.
-*   **🔊 Custom Sounds:** Optional .wav support for each alert type (or stick to Windows defaults).
-*   **📊 History & Stats:** (Coming soon) Track your battery health and drain cycles over time.
+*   **🔊 Custom Sounds:** Optional `.wav` support for each alert type (or stick to Windows defaults).
+*   **📊 SQLite Battery History:** Automatically logs battery levels and events to a local database (`history.db`) to track battery health and drain cycles over time.
+*   **📈 Mini Status Window & Hotkey:** Pop open a neat overlay with a live battery graph powered by your local history using a global keyboard shortcut (`Ctrl+Shift+B`).
+*   **🔌 Smart Power Detection:** Distinguishes between "headset turned off" (automatic low-power standby) and "battery actually dead" to eliminate spam notifications.
+*   **⚙️ Windows Registry Integration:** Easily toggle "Start with Windows" (Autostart) directly from the settings GUI or the system tray menu.
+*   **⚡ Hot-Reload Config:** Adjust thresholds, polling intervals, or alert sound options and apply them instantly without restarting the app.
 
 ---
 
 ## 📸 Impressions
-
-*(Placeholder: Add a screenshot of the new GUI here)*
 
 The new settings interface features:
 *   **Visual API Steps:** A custom diagram showing how the GG Engine reports battery levels.

@@ -17,8 +17,8 @@ AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}/issues
 AppUpdatesURL={#AppURL}/releases
 
-; Install to %LOCALAPPDATA%\NovaPulse – no admin rights needed
-DefaultDirName={localappdata}\{#AppName}
+; Default installation directory using modern auto-path constant
+DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 
@@ -62,7 +62,7 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; IconFilename:
 [Registry]
 ; Write autostart registry entry if the user checked the task during setup.
 ; NovaPulse can also toggle this itself via the tray menu at any time.
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#AppName}"; ValueData: """{app}\{#AppExeName}"""; Flags: uninsdeletevalue; Tasks: autostart
+Root: HKA; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#AppName}"; ValueData: """{app}\{#AppExeName}"""; Flags: uninsdeletevalue; Tasks: autostart
 
 [Run]
 ; Launch NovaPulse after setup completes (optional, user can uncheck)

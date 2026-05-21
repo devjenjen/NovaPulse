@@ -20,4 +20,4 @@
 
 ## Known Bugs / Issues
 
-- [ ] **Installations-Fehler auf anderen Laufwerken:** Bei der Installation auf anderen Festplatten (z.B. Laufwerk D:) tritt aktuell ein "Zugriff verweigert" Fehler auf. Das Programm sollte überall installierbar sein. (Wird morgen untersucht)
+- [x] **Installations-Fehler auf anderen Laufwerken:** Bei der Installation auf anderen Festplatten (z.B. Laufwerk D:) trat ein "Zugriff verweigert" Fehler auf. Behoben durch die Nutzung von `{autopf}` (Inno Setup Auto-Pfad-Konstante) und `Root: HKA` (Auto-Registry-Pfad) für eine saubere Behandlung von per-User- und per-Machine-Installationen.
