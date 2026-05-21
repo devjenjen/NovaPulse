@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import socket
+import sqlite3
 import sys
 import threading
 import time
@@ -728,6 +729,7 @@ def monitor_loop(config: dict, tray: TrayApp) -> None:
             )
             tray.set_status(data["headset_pct"], data["charger_pct"], data["charging"])
             monitor.update(data)
+            log_battery(data["headset_pct"], data["charger_pct"])
             time.sleep(config["poll_interval"])
 
 
@@ -1085,6 +1087,26 @@ def open_settings_gui(current_config: dict) -> None:
         _open_settings_gui_legacy(current_config)
 
 
+def init_db() -> None:
+    """Initialize the battery history database."""
+    with sqlite3.connect(DB_FILE) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS battery_log (
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                headset_pct INTEGER,
+                charger_pct INTEGER
+            )
+        """)
+
+def log_battery(headset: int, charger: int) -> None:
+    """Log current battery percentages to the database."""
+    try:
+        with sqlite3.connect(DB_FILE) as conn:
+            conn.execute("INSERT INTO battery_log (headset_pct, charger_pct) VALUES (?, ?)", 
+                         (headset, charger))
+    except Exception as e:
+        logger.error(f"Failed to log battery to DB: {e}")
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -1093,6 +1115,7 @@ def main() -> None:
         sys.exit(0)
 
     config = load_config()
+    init_db()
 
     logger.info("=" * 52)
     logger.info(f"{APP_NAME} v{VERSION} started")
