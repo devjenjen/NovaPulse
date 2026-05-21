@@ -211,6 +211,9 @@ def load_config() -> dict:
         if config.keys() != data.keys():
             CONFIG_FILE.write_text(json.dumps(config, indent=4), encoding="utf-8")
         return config
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] Corrupt config.json ({e}) – using defaults")
+        return DEFAULT_CONFIG.copy()
     except Exception as e:
         print(f"[WARNING] Could not read config.json ({e}) – using defaults")
         return DEFAULT_CONFIG.copy()
@@ -292,7 +295,7 @@ def is_autostart_enabled() -> bool:
 def enable_autostart() -> None:
     try:
         with _reg_key(winreg.KEY_SET_VALUE) as key:
-            winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, str(_exe_path()))
+            winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, f'"{_exe_path()}"')
         logger.info("Autostart enabled")
     except Exception as e:
         logger.error(f"Could not enable autostart: {e}")
@@ -446,6 +449,25 @@ def read_battery(tx_id: int) -> dict | None:
 
 # ── Notifications ──────────────────────────────────────────────────────────────
 
+def play_sound(filename: str) -> None:
+    if not filename or filename.lower() == "none":
+        return
+    try:
+        sound_path = (SOUNDS_DIR / filename).resolve()
+        # Prevent path traversal
+        if not sound_path.is_relative_to(SOUNDS_DIR.resolve()):
+            logger.error(f"Invalid sound path (traversal attempt?): {filename}")
+            return
+        if not sound_path.exists():
+            logger.warning(f"Sound file not found: {sound_path}")
+            return
+            
+        import winsound
+        winsound.PlaySound(str(sound_path), winsound.SND_FILENAME | winsound.SND_ASYNC)
+    except Exception as e:
+        logger.error(f"Failed to play sound {filename}: {e}")
+
+
 def send_notification(title: str, message: str) -> None:
     """Send a Windows toast notification; falls back to MessageBox if windows-toasts is missing."""
     if WIN_TOASTS_AVAILABLE:
@@ -463,6 +485,21 @@ def send_notification(title: str, message: str) -> None:
         ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
     except Exception as e:
         logger.error(f"Fallback notification error: {e}")
+
+
+def _check_for_updates(config: dict) -> None:
+    if not config.get("auto_check_updates", True):
+        return
+    try:
+        logger.info("Checking for updates...")
+        r = requests.get(GITHUB_RELEASES_URL, timeout=3)
+        r.raise_for_status()
+        latest = r.json().get("tag_name", "")
+        if latest and latest != f"v{VERSION}":
+            logger.info(f"Update available: {latest} (Current: v{VERSION})")
+            send_notification(f"Update Available: {latest}", f"NovaPulse {latest} is available on GitHub.")
+    except Exception as e:
+        logger.debug(f"Update check failed: {e}")
 
 
 # ── Tray icon ──────────────────────────────────────────────────────────────────
@@ -592,7 +629,9 @@ class BatteryMonitor:
     """Tracks battery state across poll cycles to prevent duplicate notifications."""
 
     def __init__(self, config: dict):
+        self.config                = config
         self.low_threshold         = config["low_threshold"]
+        self.critical_threshold    = config["critical_threshold"]
         self.full_level            = config["full_level"]
         self.headset_low_notified  = False
         self.charger_full_notified = False
@@ -607,6 +646,12 @@ class BatteryMonitor:
                 t("headset_low_title", pct=headset),
                 t("headset_low_msg",   pct=headset),
             )
+            # Play appropriate sound
+            if headset <= self.critical_threshold:
+                play_sound(self.config.get("sound_tier2", ""))
+            else:
+                play_sound(self.config.get("sound_tier1", ""))
+
             if headset <= 12: # Standard critical threshold for hardware alert
                 trigger_hardware_alert(headset)
             self.headset_low_notified = True
@@ -622,6 +667,7 @@ class BatteryMonitor:
             and not self.charger_full_notified
         ):
             send_notification(t("charger_full_title"), t("charger_full_msg"))
+            play_sound(self.config.get("sound_charger_full", ""))
             self.charger_full_notified = True
             logger.info("Charger battery reached 100%")
 
@@ -1064,6 +1110,7 @@ def main() -> None:
     tray = TrayApp()
     t_thread = threading.Thread(target=monitor_loop, args=(config, tray), daemon=True)
     register_gamesense()
+    _check_for_updates(config)
     t_thread.start()
     tray.run()
 
