@@ -1,19 +1,26 @@
 import customtkinter as ctk
+import sqlite3
+from datetime import datetime, timedelta
+import tkinter as tk
 
 class MiniStatusWindow(ctk.CTkToplevel):
-    def __init__(self, master=None, headset_pct: int = 0, charger_pct: int = 0, charging_status: str = "", **kwargs):
+    def __init__(self, master=None, db_file=None, headset_pct: int = 0, charger_pct: int = 0, charging_status: str = "", **kwargs):
         super().__init__(master, **kwargs)
         
         self.overrideredirect(True)
         self.attributes("-topmost", True)
-        self.geometry("300x120")
+        self.geometry("340x280")
         
+        self.db_file = db_file
+        self.time_range = "24h"
+        self.history_data = []
+
         # Position at bottom right, near tray
         self.update_idletasks()
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        x = screen_width - 320
-        y = screen_height - 180
+        x = screen_width - 360
+        y = screen_height - 340
         self.geometry(f"+{x}+{y}")
         
         # Auto-hide on focus out
@@ -36,6 +43,79 @@ class MiniStatusWindow(ctk.CTkToplevel):
         self.charger_lbl = None
         
         self.update_battery(headset_pct, charger_pct, charging_status)
+
+        # Graph Controls
+        ctrl_frame = ctk.CTkFrame(self, fg_color="transparent")
+        ctrl_frame.pack(fill="x", padx=10, pady=(10, 0))
+        ctk.CTkLabel(ctrl_frame, text="History", font=("Segoe UI", 12, "bold"), text_color="#ffffff").pack(side="left")
+        
+        self.range_var = ctk.StringVar(value="24h")
+        self.range_btn = ctk.CTkSegmentedButton(ctrl_frame, values=["24h", "7d"], variable=self.range_var, command=self._on_range_change, width=80)
+        self.range_btn.pack(side="right")
+        
+        # Graph Canvas
+        self.graph_cv = tk.Canvas(self, height=100, bg="#1e293b", highlightthickness=0)
+        self.graph_cv.pack(fill="both", expand=True, padx=10, pady=(5, 10))
+        self.graph_cv.bind("<Configure>", lambda e: self.draw_graph())
+        
+        if self.db_file:
+            self.load_graph_data()
+
+    def _on_range_change(self, value):
+        self.time_range = value
+        self.load_graph_data()
+
+    def load_graph_data(self):
+        if not self.db_file: return
+        
+        hours = 24 if self.time_range == "24h" else 24 * 7
+        cutoff = datetime.now() - timedelta(hours=hours)
+        
+        try:
+            with sqlite3.connect(self.db_file) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT timestamp, headset_pct, charger_pct FROM battery_log WHERE timestamp >= ? ORDER BY timestamp ASC",
+                    (cutoff.strftime("%Y-%m-%d %H:%M:%S"),)
+                )
+                self.history_data = cursor.fetchall()
+            self.draw_graph()
+        except Exception as e:
+            print(f"Graph load error: {e}")
+
+    def draw_graph(self):
+        self.graph_cv.delete("all")
+        if not self.history_data:
+            self.graph_cv.create_text(self.graph_cv.winfo_width()/2, 50, text="No data available", fill="#7f8c8d")
+            return
+            
+        w = self.graph_cv.winfo_width()
+        h = self.graph_cv.winfo_height()
+        if w < 10 or h < 10: return
+        
+        # Determine time range
+        t0 = datetime.strptime(self.history_data[0][0], "%Y-%m-%d %H:%M:%S").timestamp()
+        t1 = datetime.strptime(self.history_data[-1][0], "%Y-%m-%d %H:%M:%S").timestamp()
+        dt = max(t1 - t0, 1)
+        
+        # Draw background grid lines (25%, 50%, 75%)
+        for y_pct in [25, 50, 75]:
+            y_pos = h - (y_pct / 100) * h
+            self.graph_cv.create_line(0, y_pos, w, y_pos, fill="#374151", dash=(2, 4))
+            
+        # Extract points
+        headset_pts = []
+        charger_pts = []
+        for row in self.history_data:
+            ts = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S").timestamp()
+            x = ((ts - t0) / dt) * w
+            headset_pts.extend([x, h - (row[1] / 100) * h])
+            charger_pts.extend([x, h - (row[2] / 100) * h])
+            
+        # Draw lines
+        if len(headset_pts) >= 4:
+            self.graph_cv.create_line(headset_pts, fill="#27ae60", width=2, smooth=False)
+            self.graph_cv.create_line(charger_pts, fill="#3b82f6", width=2, smooth=False)
 
     def _add_or_update_row(self, label_text, pct, status, is_headset):
         color = "#27ae60" if pct > 20 else "#e74c3c"
