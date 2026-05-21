@@ -101,7 +101,7 @@ _STRINGS = {
         "test_low_msg":         "TEST: This is what the low-battery alert looks like.",
         "test_full_title":      "Spare battery fully charged  [TEST]",
         "test_full_msg":        "TEST: This is what the charger notification looks like.",
-        "test_critical_title":  "Headset battery critical: 12%  [TEST]",
+        "test_critical_title":  "Headset battery critical: {pct}%  [TEST]",
         "test_critical_msg":    "TEST: This is what the critical battery alert looks like.",
         "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
         "gui_save":             "Save & Close",
@@ -149,7 +149,7 @@ _STRINGS = {
         "test_low_msg":         "TEST: So sieht die Niedrig-Akku-Meldung aus.",
         "test_full_title":      "Ersatzakku vollständig geladen  [TEST]",
         "test_full_msg":        "TEST: So sieht die Ladegerät-Benachrichtigung aus.",
-        "test_critical_title":  "Headset-Akku kritisch: 12%  [TEST]",
+        "test_critical_title":  "Headset-Akku kritisch: {pct}%  [TEST]",
         "test_critical_msg":    "TEST: So sieht die kritische Akku-Warnung aus.",
         "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
         "gui_save":             "Speichern & Schließen",
@@ -887,6 +887,10 @@ def test_low_battery() -> None:
 def test_charger_full() -> None:
     send_notification(t("test_full_title"), t("test_full_msg"))
 
+def test_critical_battery() -> None:
+    cfg = load_config()
+    send_notification(t("test_critical_title", pct=cfg["critical_threshold"]), t("test_critical_msg"))
+
 
 # ── Settings GUI ───────────────────────────────────────────────────────────────
 
@@ -1102,9 +1106,7 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
         r_test.pack(fill="x", padx=16, pady=(0, 12))
         
         ctk.CTkButton(r_test, text=t("gui_test_low"), width=100, height=28, fg_color=CARD, border_width=1, border_color=BORDER, command=test_low_battery).pack(side="left", padx=(0, 8))
-        # (Using custom test helper for Tier 2 since it's not a top-level function yet)
-        def test_critical(): send_notification(t("test_critical_title"), t("test_critical_msg"))
-        ctk.CTkButton(r_test, text=t("gui_test_critical"), width=100, height=28, fg_color=CARD, border_width=1, border_color=BORDER, command=test_critical).pack(side="left", padx=(0, 8))
+        ctk.CTkButton(r_test, text=t("gui_test_critical"), width=100, height=28, fg_color=CARD, border_width=1, border_color=BORDER, command=test_critical_battery).pack(side="left", padx=(0, 8))
         ctk.CTkButton(r_test, text=t("gui_test_full"), width=100, height=28, fg_color=CARD, border_width=1, border_color=BORDER, command=test_charger_full).pack(side="left")
 
         # ── Tab: Sounds ──
