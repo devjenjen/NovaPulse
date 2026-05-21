@@ -31,6 +31,8 @@ htmlcov/
 .worktrees/
 .superpowers/
 docs/superpowers/
+CLAUDE.md
+STATUS.md
 
 # Runtime data & Logs
 *.db
