@@ -101,6 +101,8 @@ _STRINGS = {
         "test_low_msg":         "TEST: This is what the low-battery alert looks like.",
         "test_full_title":      "Spare battery fully charged  [TEST]",
         "test_full_msg":        "TEST: This is what the charger notification looks like.",
+        "test_critical_title":  "Headset battery critical: 12%  [TEST]",
+        "test_critical_msg":    "TEST: This is what the critical battery alert looks like.",
         "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
         "gui_save":             "Save & Close",
         "gui_cancel":           "Cancel",
@@ -147,6 +149,8 @@ _STRINGS = {
         "test_low_msg":         "TEST: So sieht die Niedrig-Akku-Meldung aus.",
         "test_full_title":      "Ersatzakku vollständig geladen  [TEST]",
         "test_full_msg":        "TEST: So sieht die Ladegerät-Benachrichtigung aus.",
+        "test_critical_title":  "Headset-Akku kritisch: 12%  [TEST]",
+        "test_critical_msg":    "TEST: So sieht die kritische Akku-Warnung aus.",
         "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
         "gui_save":             "Speichern & Schließen",
         "gui_cancel":           "Abbrechen",
@@ -209,6 +213,11 @@ DEFAULT_CONFIG = {
 }
 
 
+_INT_KEYS = {
+    "poll_interval", "low_threshold", "critical_threshold", "full_level",
+    "startup_grace", "standby_retry_fast", "standby_fast_count", "standby_retry_slow",
+}
+
 def load_config() -> dict:
     if not CONFIG_FILE.exists():
         run_setup_wizard()
@@ -216,6 +225,11 @@ def load_config() -> dict:
         data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
         config = DEFAULT_CONFIG.copy()
         config.update(data)
+        for key in _INT_KEYS:
+            try:
+                config[key] = int(config[key])
+            except (TypeError, ValueError):
+                config[key] = DEFAULT_CONFIG[key]
         if config.keys() != data.keys():
             CONFIG_FILE.write_text(json.dumps(config, indent=4), encoding="utf-8")
         return config
