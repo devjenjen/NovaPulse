@@ -36,6 +36,8 @@ docs/superpowers/
 CLAUDE.md
 AGENTS.md
 requirements-dev.txt
+.antigravitycli/
+startall.bat
 
 # Runtime data & Logs
 *.db
