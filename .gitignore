@@ -7,11 +7,13 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.spec
 
 # Virtual environments
 venv/
 .venv/
 env/
+.env
 
 # Runtime data (created by NovaPulse at launch)
 # %LOCALAPPDATA%\NovaPulse\ is outside the repo, nothing to ignore here
@@ -31,8 +33,6 @@ htmlcov/
 .worktrees/
 .superpowers/
 docs/superpowers/
-CLAUDE.md
-STATUS.md
 
 # Runtime data & Logs
 *.db

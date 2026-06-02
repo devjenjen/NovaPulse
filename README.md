@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/Version-v0.1.0-blueviolet)](https://github.com/devjenjen/NovaPulse/releases)
+[![Release](https://img.shields.io/badge/Version-v0.2.0-blueviolet)](https://github.com/devjenjen/NovaPulse/releases)
 
 🌍 **[English](#english)** | 🇩🇪 **[Deutsch](#deutsch)** | 📝 **[Changelog](CHANGELOG.md)**
 
@@ -30,7 +30,7 @@ If you own a **SteelSeries Nova Pro Wireless** headset, you know the problem: th
 Installation takes just a minute. You don't need any coding skills!
 
 1.  **Download:** Go to the **[Releases Page](https://github.com/devjenjen/NovaPulse/releases/latest)**.
-2.  **Choose Setup:** Click on the file `NovaPulse-Setup-0.1.0.exe` to download it.
+2.  **Choose Setup:** Click on the file `NovaPulse-Setup-0.2.0.exe` to download it.
 3.  **Install:** Run the downloaded file with a double-click. Follow the instructions.
 4.  **Start:** After installation, you will find "NovaPulse" in your Start Menu or in the Windows system tray at the bottom right (as a small icon).
 
@@ -59,7 +59,7 @@ If you want to run the code yourself or modify it:
    ```bash
    git clone https://github.com/devjenjen/NovaPulse.git
    cd NovaPulse
-   python novapulse.pyw
+   python src/main.pyw
    ```
 
 ### 🔒 Security & Technical Details
@@ -103,7 +103,7 @@ Wenn du ein **SteelSeries Nova Pro Wireless** Headset hast, kennst du das Proble
 Die Installation dauert nur eine Minute. Du musst nicht programmieren können!
 
 1.  **Herunterladen:** Gehe auf die **[Releases-Seite](https://github.com/devjenjen/NovaPulse/releases/latest)**.
-2.  **Setup wählen:** Klicke dort auf die Datei `NovaPulse-Setup-0.1.0.exe`, um sie herunterzuladen.
+2.  **Setup wählen:** Klicke dort auf die Datei `NovaPulse-Setup-0.2.0.exe`, um sie herunterzuladen.
 3.  **Installieren:** Führe die heruntergeladene Datei mit einem Doppelklick aus. Folge den Anweisungen.
 4.  **Starten:** Nach der Installation findest du "NovaPulse" in deinem Startmenü oder unten rechts in der Windows-Taskleiste (als kleines Symbol).
 
@@ -132,7 +132,7 @@ Wenn du den Code selbst ausführen oder anpassen möchtest:
    ```bash
    git clone https://github.com/devjenjen/NovaPulse.git
    cd NovaPulse
-   python novapulse.pyw
+   python src/main.pyw
    ```
 
 ### 🔒 Sicherheit & Technische Details

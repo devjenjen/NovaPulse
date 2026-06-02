@@ -32,7 +32,7 @@ jobs:
           $cleanTag = $tag.TrimStart('v')
           
           # 1. Update Python code
-          (Get-Content novapulse.pyw) -replace 'VERSION\s*=\s*".*"', "VERSION     = `"$tag`"" | Set-Content novapulse.pyw
+          (Get-Content src/core/constants.py) -replace 'VERSION\s*=\s*".*"', "VERSION     = `"$tag`"" | Set-Content src/core/constants.py
           
           # 2. Update README.md badge (supports vX.X.X or X.X.X)
           (Get-Content README.md) -replace 'Version-v?\d+\.\d+\.\d+[^-\s]*', "Version-$tag" | Set-Content README.md
@@ -43,7 +43,8 @@ jobs:
 
       - name: Build Executable
         run: |
-          pyinstaller --noconsole --onefile --icon=assets/icon.ico --name "NovaPulse" novapulse.pyw
+          .\build.ps1
+        shell: powershell
 
       - name: Build Installer (Inno Setup)
         run: |

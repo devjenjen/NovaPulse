@@ -12,9 +12,10 @@
 - **Auto-update check** – queries GitHub Releases API.
 - **Autostart toggle** – Windows registry integration.
 - **Hot-reload config** – reload thresholds without full restart.
-- **Mini status window** – battery graph from history.db with global hotkey.
-- **Installer / setup wizard** – first-run experience.
-- **Headset Power State Detection** – distinguishes "headset off" from "battery dead" (Offline state).
+- **Mini status window** - battery graph from history.db with global hotkey.
+- **Installer / setup wizard** - first-run experience, including a guided setup for language selection and initial engine check (`setup_wizard.py`).
+- **Headset Power State Detection** - distinguishes "headset off" from "battery dead" (Offline state).
+- **Single-instance restriction** - prevents multiple instances using socket-based locks (`utils.py`).
 
 ## Open TODOs
 

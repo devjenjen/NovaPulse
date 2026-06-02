@@ -1,0 +1,115 @@
+import json
+from src.core.constants import CONFIG_FILE
+
+_STRINGS = {
+    "en": {
+        "gui_title":            "NovaPulse Settings",
+        "headset_low_title":    "Headset battery low: {pct}%",
+        "headset_low_msg":      "Your headset has only {pct}% battery left.\nPlease swap or charge the battery soon.",
+        "charger_full_title":   "Spare battery fully charged",
+        "charger_full_msg":     "The battery in the charger dock is at 100%.\nYou can now swap it into your headset.",
+        "autostart_on":         "Autostart enabled. App will start with Windows.",
+        "autostart_off":        "Autostart disabled.",
+        "tray_status_offline":  "Device offline – standby",
+        "tray_menu_settings":   "Settings",
+        "tray_menu_autostart":  "{check} Start with Windows",
+        "tray_menu_config":     "Open config.json",
+        "tray_menu_log":        "Open log file",
+        "tray_menu_quit":       "Quit",
+        "tray_tooltip":         "Headset: {h}%  |  Charger: {c}%",
+        "test_low_title":       "Headset battery low: 20%  [TEST]",
+        "test_low_msg":         "TEST: This is what the low-battery alert looks like.",
+        "test_full_title":      "Spare battery fully charged  [TEST]",
+        "test_full_msg":        "TEST: This is what the charger notification looks like.",
+        "test_critical_title":  "Headset battery critical: {pct}%  [TEST]",
+        "test_critical_msg":    "TEST: This is what the critical battery alert looks like.",
+        "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
+        "gui_save":             "Save & Close",
+        "gui_cancel":           "Cancel",
+        "gui_restart_required": "Restart required to apply changes",
+        "gui_language":         "Language",
+        "gui_poll_interval":    "Poll interval (seconds)",
+        "gui_autostart":        "Start with Windows",
+        "gui_auto_update":      "Check for updates on startup",
+        "gui_low_threshold":      "Tier 1 warning threshold (%)",
+        "gui_low_note":           "Recommended: 25  (GG API step value)",
+        "gui_critical_threshold": "Tier 2 warning threshold (%)",
+        "gui_critical_note":      "Recommended: 12  (last step before 0%)",
+        "gui_full_level":         "Charger full notification at (%)",
+        "gui_test_low":           "Test Tier 1",
+        "gui_test_critical":      "Test Tier 2",
+        "gui_test_full":          "Test Charger",
+        "gui_sounds_info":        "FUN OPTION - completely optional!\n\nDrop any .wav file into the sounds folder and enter its filename below.\nLeave blank = Windows default beep    |    type 'none' = silence.",
+        "gui_sound_tier1":        "Sound for Tier 1 alert (25%)",
+        "gui_sound_tier2":        "Sound for Tier 2 alert (12%)",
+        "gui_sound_charger":      "Sound when charger is full",
+        "gui_open_sounds_folder": "Open sounds folder",
+        "gui_startup_grace":      "Startup grace period (seconds)",
+        "gui_standby_fast":       "Standby fast-retry interval (s)",
+        "gui_standby_count":      "Standby fast-retry count",
+        "gui_standby_slow":       "Standby slow-retry interval (s)",
+        "gui_hardware_alert":     "Hardware OLED Alert (on base station)",
+    },
+    "de": {
+        "gui_title":            "NovaPulse Einstellungen",
+        "headset_low_title":    "Headset-Akku schwach: {pct}%",
+        "headset_low_msg":      "Dein Headset hat nur noch {pct}% Akku.\nBitte bald tauschen oder laden.",
+        "charger_full_title":   "Ersatzakku vollständig geladen",
+        "charger_full_msg":     "Der Akku in der Ladestation ist bei 100%.\nDu kannst ihn jetzt ins Headset einlegen.",
+        "autostart_on":         "Autostart aktiviert. App startet mit Windows.",
+        "autostart_off":        "Autostart deaktiviert.",
+        "tray_status_offline":  "Gerät offline – Standby",
+        "tray_menu_settings":   "Einstellungen",
+        "tray_menu_autostart":  "{check} Mit Windows starten",
+        "tray_menu_config":     "config.json öffnen",
+        "tray_menu_log":        "Log-Datei öffnen",
+        "tray_menu_quit":       "Beenden",
+        "tray_tooltip":         "Headset: {h}%  |  Ladegerät: {c}%",
+        "test_low_title":       "Headset-Akku schwach: 20%  [TEST]",
+        "test_low_msg":         "TEST: So sieht die Niedrig-Akku-Meldung aus.",
+        "test_full_title":      "Ersatzakku vollständig geladen  [TEST]",
+        "test_full_msg":        "TEST: So sieht die Ladegerät-Benachrichtigung aus.",
+        "test_critical_title":  "Headset-Akku kritisch: {pct}%  [TEST]",
+        "test_critical_msg":    "TEST: So sieht die kritische Akku-Warnung aus.",
+        "lang_prompt":          "Choose language / Sprache wählen:\n  1 – English\n  2 – Deutsch\n> ",
+        "gui_save":             "Speichern & Schließen",
+        "gui_cancel":           "Abbrechen",
+        "gui_restart_required": "Neustart erforderlich zum Anwenden",
+        "gui_language":         "Sprache",
+        "gui_poll_interval":    "Abfrageintervall (Sekunden)",
+        "gui_autostart":        "Mit Windows starten",
+        "gui_auto_update":      "Beim Start auf Updates prüfen",
+        "gui_low_threshold":      "Stufe 1 Warnschwelle (%)",
+        "gui_low_note":           "Empfohlen: 25  (GG-API-Stufe)",
+        "gui_critical_threshold": "Stufe 2 Warnschwelle (%)",
+        "gui_critical_note":      "Empfohlen: 12  (letzte Stufe vor 0%)",
+        "gui_full_level":         "Ladegerät-Benachrichtigung bei (%)",
+        "gui_test_low":           "Test Stufe 1",
+        "gui_test_critical":      "Test Stufe 2",
+        "gui_test_full":          "Test Ladegerät",
+        "gui_sounds_info":        "FUN OPTION - vollkommen optional!\n\nLege eine .wav-Datei in den Sound-Ordner und trage den Dateinamen unten ein.\nLeer lassen = Windows-Standardton    |    'none' eingeben = kein Ton.",
+        "gui_sound_tier1":        "Sound für Stufe 1 (25%)",
+        "gui_sound_tier2":        "Sound für Stufe 2 (12%)",
+        "gui_sound_charger":      "Sound wenn Ladegerät voll",
+        "gui_open_sounds_folder": "Sound-Ordner öffnen",
+        "gui_startup_grace":      "Wartezeit bei Start (Sekunden)",
+        "gui_standby_fast":       "Standby Schnell-Retry (s)",
+        "gui_standby_count":      "Standby Schnell-Retry Anzahl",
+        "gui_standby_slow":       "Standby Langsam-Retry (s)",
+        "gui_hardware_alert":     "Hardware OLED Alert (auf Basisstation)",
+    }
+}
+
+def _cfg_lang() -> str:
+    """Read language from config, fallback to 'en'."""
+    try:
+        data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        return data.get("language", "en")
+    except Exception:
+        return "en"
+
+def t(key: str, **kwargs) -> str:
+    """Return a translated string for the active language."""
+    lang = _cfg_lang()
+    text = _STRINGS.get(lang, _STRINGS["en"]).get(key, key)
+    return text.format(**kwargs) if kwargs else text
