@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![Release](https://img.shields.io/badge/Version-v0.2.0-blueviolet)](https://github.com/devjenjen/NovaPulse/releases)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/devjenjen)
 
 🌍 **[English](#english)** | 🇩🇪 **[Deutsch](#deutsch)** | 📝 **[Changelog](CHANGELOG.md)**
 
@@ -17,10 +18,11 @@ If you own a **SteelSeries Nova Pro Wireless** headset, you know the problem: th
 
 **NovaPulse** solves this problem. It runs lightweight in the background and provides:
 
-*   **🚨 Smart Warnings:** Get a timely Windows notification at 25% (Warning) and 12% (Critical).
+*   **🚨 Smart Warnings:** Get a timely Windows notification at 25% (Warning) and 12% (Critical). You can even **snooze** them for 30 minutes!
 *   **🔋 Charger Monitor for Spare Battery:** NovaPulse notifies you as soon as the battery in your base station is fully charged!
 *   **📟 OLED Warning:** When things get critical, a **"!!! SWAP AKKU !!!"** message flashes directly on the display of your base station.
-*   **📊 Live Status:** Use the shortcut `Ctrl + Shift + B` at any time to open a small info window with the current battery level.
+*   **📊 Live Status & Time Remaining:** Use the shortcut `Ctrl + Shift + B` at any time to open a small info window with the current battery level, past history graph, and an estimate of the **remaining time**.
+*   **🎮 Game Mode (DND):** Automatically mutes audio alerts when you're playing a fullscreen game.
 
 > [!TIP]
 > NovaPulse only communicates locally with your SteelSeries Engine (on your own PC). **No data** is sent to the internet.
@@ -53,7 +55,7 @@ If you want to run the code yourself or modify it:
 1. **Requirements:** Python 3.10+ and the SteelSeries GG Engine.
 2. **Install Dependencies:**
    ```bash
-   pip install requests windows-toasts pystray pillow customtkinter
+   pip install requests windows-toasts pystray pillow customtkinter pygame-ce
    ```
 3. **Run:**
    ```bash
@@ -73,6 +75,11 @@ NovaPulse communicates locally with the SteelSeries GG Engine via `127.0.0.1` (L
 
 Do you like NovaPulse? I welcome feedback, bug reports, or pull requests (code improvements)!
 
+<a href="https://www.buymeacoffee.com/devjenjen" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+<!-- Optional script for external sites -->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="devjenjen" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+
 ### 📜 License
 
 Released under the **MIT License**. See the `LICENSE` file for details.
@@ -90,10 +97,11 @@ Wenn du ein **SteelSeries Nova Pro Wireless** Headset hast, kennst du das Proble
 
 **NovaPulse** löst dieses Problem. Es läuft leichtgewichtig im Hintergrund und bietet dir:
 
-*   **🚨 Smarte Warnungen:** Bekomme rechtzeitig eine Windows-Benachrichtigung bei 25% (Warnung) und 12% (Kritisch).
+*   **🚨 Smarte Warnungen:** Bekomme rechtzeitig eine Windows-Benachrichtigung bei 25% (Warnung) und 12% (Kritisch). Du kannst sie auch einfach für 30 Minuten **schlummern (snooze)** lassen!
 *   **🔋 Lade-Monitor für den Ersatzakku:** NovaPulse sagt dir Bescheid, sobald der Akku in deiner Basisstation wieder voll ist!
 *   **📟 OLED-Warnung:** Wenn es kritisch wird, blinkt eine **"!!! SWAP AKKU !!!"**-Meldung direkt auf dem Display deiner Basisstation.
-*   **📊 Live-Status:** Mit der Tastenkombination `Strg + Umschalt + B` öffnest du jederzeit ein kleines Info-Fenster mit dem aktuellen Batteriestand.
+*   **📊 Live-Status & Restzeit:** Mit der Tastenkombination `Strg + Umschalt + B` öffnest du jederzeit ein kleines Info-Fenster mit dem aktuellen Batteriestand, einem Entladungsgraphen und der **geschätzten Restlaufzeit**.
+*   **🎮 Spiel-Modus (DND):** Schaltet Audiowarnungen automatisch stumm, wenn du gerade im Vollbildmodus spielst.
 
 > [!TIP]
 > NovaPulse kommuniziert nur lokal mit deiner SteelSeries Engine (auf deinem eigenen PC). Es werden **keine Daten** ins Internet gesendet.
@@ -126,7 +134,7 @@ Wenn du den Code selbst ausführen oder anpassen möchtest:
 1. **Voraussetzungen:** Python 3.10+ und die SteelSeries GG Engine.
 2. **Abhängigkeiten installieren:**
    ```bash
-   pip install requests windows-toasts pystray pillow customtkinter
+   pip install requests windows-toasts pystray pillow customtkinter pygame-ce
    ```
 3. **Starten:**
    ```bash
@@ -145,6 +153,11 @@ NovaPulse kommuniziert ausschließlich lokal mit der SteelSeries GG Engine über
 ### 🤝 Mitmachen & Feedback
 
 Gefällt dir NovaPulse? Ich freue mich über Feedback, Bug-Reports oder Pull-Requests (Verbesserungen am Code)!
+
+<a href="https://www.buymeacoffee.com/devjenjen" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+<!-- Optional script for external sites -->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="devjenjen" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
 
 ### 📜 Lizenz
 

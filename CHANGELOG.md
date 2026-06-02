@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-06-02
 
 ### Added
+- **Snooze Functionality:** Added a "Snooze 30 mins" button directly to Windows toast notifications to temporarily mute battery alerts.
+- **Enhanced Audio Support:** Switched to `pygame-ce` to support playback of `.mp3` and `.ogg` files for custom sounds, while keeping `.wav` backward compatibility.
+- **Do Not Disturb (DND) / Game Mode:** NovaPulse now detects if a fullscreen application (like a game) is active and automatically suppresses audio alerts.
+- **Battery Analytics (Time Remaining):** Dynamically estimates the remaining battery time based on recent discharge rates and displays it in the system tray and mini status window.
+- **Battery Analytics (Health):** Evaluates long-term battery degradation and displays the estimated maximum runtime of a full charge in the Settings menu.
+- **Improved Live-Status Graph:** The mini status graph (`Ctrl+Shift+B`) now defaults to a more granular 12-hour view.
 - **Modular Architecture:** Completely refactored the project structure into `core`, `api`, `monitor`, and `ui` modules to separate concerns and improve maintainability.
 - **Setup Wizard:** Added an initial guided setup wizard (`setup_wizard.py`) for language selection and verifying the connection to the SteelSeries GG Engine.
 - **Single-Instance Lock:** Enforced single-instance application running via a socket-based lock mechanism (`utils.py`).
@@ -35,6 +41,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation Sanitization:** Removed absolute local paths and sanitized `CLAUDE.md` and `STATUS.md`.
 
 ### Security
-- Added `.claude/` to `.gitignore` to prevent leakage of local history and configuration.
 - Improved registry key handling for autostart.
 - Added path resolution checks for audio files.

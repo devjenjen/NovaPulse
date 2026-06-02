@@ -5,3 +5,4 @@ pillow==12.2.0
 customtkinter==5.2.2
 keyboard==0.13.5
 urllib3==2.6.3
+pygame-ce==2.5.7

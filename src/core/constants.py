@@ -5,7 +5,7 @@ import sys
 from logging.handlers import RotatingFileHandler
 
 APP_NAME    = "NovaPulse"
-VERSION     = "0.2.0-dev"
+VERSION     = "0.2.0"
 APP_DIR     = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "NovaPulse"
 CONFIG_FILE = APP_DIR / "config.json"
 LOG_FILE    = APP_DIR / "novapulse.log"

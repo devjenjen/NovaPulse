@@ -8,6 +8,7 @@ from src.core.i18n import t
 from src.core.autostart import enable_autostart, disable_autostart, is_autostart_enabled
 from src.core.utils import get_reload_event
 from src.ui.notifications import send_notification
+from src.monitor.database import get_battery_health_estimate
 
 try:
     import customtkinter as ctk
@@ -126,6 +127,14 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
         r_upd = _create_row(c_app, t("gui_auto_update"))
         upd_var = tk.BooleanVar(value=cfg.get("auto_check_updates", True))
         ctk.CTkSwitch(r_upd, text="", variable=upd_var, progress_color=OK, button_color=FG, button_hover_color="#ffffff").pack(side="right")
+        r_dnd = _create_row(c_app, "DND Mode (Mute on Fullscreen)")
+        dnd_var = tk.BooleanVar(value=cfg.get("dnd_mode", True))
+        ctk.CTkSwitch(r_dnd, text="", variable=dnd_var, progress_color=OK, button_color=FG, button_hover_color="#ffffff").pack(side="right")
+
+        c_health = _create_card(f_gen, "Battery Analytics")
+        r_health = _create_row(c_health, "Battery Health")
+        health_text = get_battery_health_estimate()
+        ctk.CTkLabel(r_health, text=health_text, text_color=OK, font=("Segoe UI", 11, "bold")).pack(side="right")
 
         c_headset = _create_card(f_al, "Headset Alerts")
         r_t1 = _create_row(c_headset, t("gui_low_threshold"))
@@ -209,6 +218,7 @@ def _open_settings_gui_ctk(current_config: dict) -> None:
             cfg["language"]           = lang_var.get()
             cfg["poll_interval"]      = max(5, poll_var.get())
             cfg["auto_check_updates"] = upd_var.get()
+            cfg["dnd_mode"]           = dnd_var.get()
             cfg["low_threshold"]      = max(1, min(99, t1_var.get()))
             cfg["critical_threshold"] = max(1, min(cfg["low_threshold"]-1, t2_var.get()))
             cfg["full_level"]         = max(1, min(100, full_var.get()))

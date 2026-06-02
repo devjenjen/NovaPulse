@@ -27,6 +27,7 @@ class BatteryMonitor:
         self.headset_low_notified  = False
         self.charger_full_notified = False
         self.last_charger_pct: int | None = None
+        self.snooze_until          = 0
 
     def reload_config(self, config: dict) -> None:
         self.config             = config
@@ -34,25 +35,36 @@ class BatteryMonitor:
         self.critical_threshold = config["critical_threshold"]
         self.full_level         = config["full_level"]
 
+    def snooze(self):
+        self.snooze_until = time.time() + 30 * 60
+        self.headset_low_notified = False
+        logger.info("Notifications snoozed for 30 minutes")
+
     def update(self, data: dict) -> None:
         headset = data["headset_pct"]
         charger = data["charger_pct"]
+        
+        dnd_enabled = self.config.get("dnd_mode", True)
 
-        if headset <= self.low_threshold and not self.headset_low_notified:
-            send_notification(
-                t("headset_low_title", pct=headset),
-                t("headset_low_msg",   pct=headset),
-            )
-            # Play appropriate sound
-            if headset <= self.critical_threshold:
-                play_sound(self.config.get("sound_tier2", ""))
-            else:
-                play_sound(self.config.get("sound_tier1", ""))
+        if time.time() < self.snooze_until:
+            pass
+        else:
+            if headset <= self.low_threshold and not self.headset_low_notified:
+                send_notification(
+                    t("headset_low_title", pct=headset),
+                    t("headset_low_msg",   pct=headset),
+                    snooze_callback=self.snooze
+                )
+                # Play appropriate sound
+                if headset <= self.critical_threshold:
+                    play_sound(self.config.get("sound_tier2", ""), dnd_enabled)
+                else:
+                    play_sound(self.config.get("sound_tier1", ""), dnd_enabled)
 
-            if headset <= 12: # Standard critical threshold for hardware alert
-                trigger_hardware_alert(headset)
-            self.headset_low_notified = True
-            logger.warning(f"Headset battery low: {headset}%")
+                if headset <= 12: # Standard critical threshold for hardware alert
+                    trigger_hardware_alert(headset)
+                self.headset_low_notified = True
+                logger.warning(f"Headset battery low: {headset}%")
 
         if headset > self.low_threshold + 5:
             self.headset_low_notified = False
@@ -64,7 +76,7 @@ class BatteryMonitor:
             and not self.charger_full_notified
         ):
             send_notification(t("charger_full_title"), t("charger_full_msg"))
-            play_sound(self.config.get("sound_charger_full", ""))
+            play_sound(self.config.get("sound_charger_full", ""), dnd_enabled)
             self.charger_full_notified = True
             logger.info("Charger battery reached 100%")
 

@@ -52,6 +52,8 @@ def _create_tray_icon(color: str = _COLOR_GREY) -> "Image.Image":
     return img
 
 
+from src.monitor.database import get_time_remaining_estimate
+
 class TrayApp:
     def __init__(self):
         self._status  = "Starting..."
@@ -67,10 +69,11 @@ class TrayApp:
                 self._icon.icon  = _create_tray_icon(_battery_color(0, offline=True))
                 self._icon.title = f"Headset: Offline  |  Charger: {charger}%"
         else:
-            self._status = f"Headset:  {headset}%{charge_mark}\nCharger:  {charger}%"
+            est = get_time_remaining_estimate(headset)
+            self._status = f"Headset:  {headset}%{charge_mark}\nCharger:  {charger}%\n\n{est}"
             if self._icon:
                 self._icon.icon  = _create_tray_icon(_battery_color(headset))
-                self._icon.title = t("tray_tooltip", h=headset, c=charger)
+                self._icon.title = f"{t('tray_tooltip', h=headset, c=charger)}\n{est}"
 
     def set_standby(self) -> None:
         self._status = t("tray_status_offline")

@@ -1,7 +1,8 @@
 import customtkinter as ctk
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import tkinter as tk
+from src.monitor.database import get_time_remaining_estimate
 
 class MiniStatusWindow(ctk.CTkToplevel):
     def __init__(self, master=None, db_file=None, headset_pct: int = 0, charger_pct: int = 0, charging_status: str = "", refresh_callback=None, **kwargs):
@@ -12,7 +13,7 @@ class MiniStatusWindow(ctk.CTkToplevel):
         self.geometry("340x280")
         
         self.db_file = db_file
-        self.time_range = "24h"
+        self.time_range = "12h"
         self.history_data = []
         self.refresh_callback = refresh_callback
 
@@ -43,6 +44,9 @@ class MiniStatusWindow(ctk.CTkToplevel):
         self.headset_lbl = None
         self.charger_lbl = None
         
+        self.est_lbl = ctk.CTkLabel(self.batt_frame, text="", font=("Segoe UI", 11, "italic"), text_color="#94a3b8")
+        self.est_lbl.pack(fill="x", padx=10, pady=(0, 5))
+        
         self.update_battery(headset_pct, charger_pct, charging_status)
 
         # Graph Controls
@@ -50,8 +54,8 @@ class MiniStatusWindow(ctk.CTkToplevel):
         ctrl_frame.pack(fill="x", padx=10, pady=(10, 0))
         ctk.CTkLabel(ctrl_frame, text="History", font=("Segoe UI", 12, "bold"), text_color="#ffffff").pack(side="left")
         
-        self.range_var = ctk.StringVar(value="24h")
-        self.range_btn = ctk.CTkSegmentedButton(ctrl_frame, values=["24h", "7d"], variable=self.range_var, command=self._on_range_change, width=80)
+        self.range_var = ctk.StringVar(value="12h")
+        self.range_btn = ctk.CTkSegmentedButton(ctrl_frame, values=["12h", "24h", "7d"], variable=self.range_var, command=self._on_range_change, width=120)
         self.range_btn.pack(side="right")
         
         # Graph Canvas
@@ -85,8 +89,8 @@ class MiniStatusWindow(ctk.CTkToplevel):
     def load_graph_data(self):
         if not self.db_file: return
         
-        hours = 24 if self.time_range == "24h" else 24 * 7
-        cutoff = datetime.now() - timedelta(hours=hours)
+        hours = 12 if self.time_range == "12h" else 24 if self.time_range == "24h" else 24 * 7
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
         
         try:
             with sqlite3.connect(self.db_file) as conn:
@@ -164,6 +168,15 @@ class MiniStatusWindow(ctk.CTkToplevel):
     def update_battery(self, headset_pct: int, charger_pct: int, charging_status: str):
         self._add_or_update_row("Headset", headset_pct, charging_status, True)
         self._add_or_update_row("Charger", charger_pct, "", False)
+        
+        # Update estimate
+        if headset_pct == 0 and charging_status == "UNKNOWN_OR_HEADSET_NOT_CONNECTED":
+            est = ""
+        else:
+            est = get_time_remaining_estimate(headset_pct)
+            
+        if hasattr(self, 'est_lbl'):
+            self.est_lbl.configure(text=est)
 
     def show(self):
         self.deiconify()

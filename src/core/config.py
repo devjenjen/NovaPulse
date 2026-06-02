@@ -14,6 +14,7 @@ DEFAULT_CONFIG = {
     "auto_check_updates":  True,  # check GitHub Releases API on startup
     "hardware_alert":      True,  # trigger GameSense OLED alert
     "hotkey":      "ctrl+shift+b",# global hotkey for mini status
+    "dnd_mode":            True,  # suppress audio during fullscreen/focus
 }
 
 _INT_KEYS = {
