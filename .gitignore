@@ -33,6 +33,9 @@ htmlcov/
 .worktrees/
 .superpowers/
 docs/superpowers/
+CLAUDE.md
+AGENTS.md
+requirements-dev.txt
 
 # Runtime data & Logs
 *.db
